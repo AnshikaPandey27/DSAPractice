@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+       int c=0;
+       int i;
+       for( i=0;i<nums.size();i++)
+       {
+           if(target==nums[i])
+           {c++;
+           break;
+           }
+       }
+           if(c==0)
+           return -1;
+           else 
+           return i; 
+    }
+};
