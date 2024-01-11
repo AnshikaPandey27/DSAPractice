@@ -1,0 +1,165 @@
+//solution 1 Brute Force/Exhaustive approach
+//T.C- O(n^3) and S.C- O(1)
+class Solution1 {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int msum=INT_MIN;
+        for(int i=0;i<nums.size();i++)
+        {
+            for(int j=i;j<nums.size();j++)
+            {
+                int sum=0;
+                for(int k=i;k<=j;k++)
+                {
+                    sum=sum+nums[k];
+                }
+                msum=max(msum,sum);
+            }
+        }
+        return msum;
+    }
+};
+//solution 2 Improved Brute Force/Exhaustive approach
+//T.C- O(n^2) and S.C- O(1)
+class Solution2 {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int msum=INT_MIN;
+        int sum;
+        for(int i=0;i<nums.size();i++)
+        {
+            sum=0;
+            for(int j=i;j<nums.size();j++)
+            {
+                sum=sum+nums[j];
+                msum=max(msum,sum);
+            }
+            }
+        return msum;
+    }
+};
+//solution 3 Divide and Qonquer Approach
+//T.C- O(nlogn) and S.C- O(stack space O(logn))
+class Solution3{
+public:
+    int dnc(vector<int>&nums,int l,int u)
+    {
+        if(l>u)
+        return 0;
+        if(u==l)
+        return nums[l];
+        int mid=(l+u)/2;
+        int lsum=INT_MIN;
+        int sum1=0;
+        for(int i=mid;i>=l;i--)
+        {
+            sum1=sum1+nums[i];
+        lsum=max(lsum,sum1);
+        }
+        int rsum=INT_MIN;
+        int sum2=0;
+        for(int i=mid+1;i<=u;i++)
+        {
+            sum2=sum2+nums[i];
+        rsum=max(rsum,sum2);
+        }
+        auto r=max(dnc(nums,l,mid),dnc(nums,mid+1,u));
+        return max(lsum+rsum,r);
+    }
+    int maxSubArray(vector<int>& nums) {
+        int l=0;
+        int u=nums.size();
+       int ans=dnc(nums,l,u-1);
+       return ans;
+    }
+};
+//solution 4 Naive Backtracking
+//T.C- O(n^2) and S.C- O(n)
+class Solution4 {
+public:
+int g(vector<int>&nums,int i,int s)
+{
+    if(s==0)
+    return nums[0];
+    return max(nums[s],nums[s]+g(nums,i,s-1));
+}
+int f(vector<int>&nums,int i,int s)
+{
+    if(s==0)
+    return nums[0];
+    return max(f(nums,i,s-1),g(nums,i,s));
+}
+    int maxSubArray(vector<int>& nums) {
+        int s=nums.size()-1;
+     int ans= f(nums,0,s);
+     return ans;
+    }
+};
+//solution 5 Memoized solution
+//T.C- O(n) and S.C- O(n)
+class Solution5 {
+public:
+        
+int g(vector<int>&nums,int i,int s,int tf[],int tg[])
+{
+    if(tg[s]!=INT_MIN)
+    return tg[s];
+    return tg[s]=max(nums[s],nums[s]+g(nums,i,s-1,tf,tg));
+}
+int f(vector<int>&nums,int i,int s,int tf[],int tg[])
+{
+   if(tf[s]!=INT_MIN)
+    return tf[s];
+    return tf[s]=max(f(nums,i,s-1,tf,tg),g(nums,i,s,tf,tg));
+}
+    int maxSubArray(vector<int>& nums) {
+        int s=nums.size()-1;
+        int tf[s+2];
+        int tg[s+2];
+        for(int i=0;i<nums.size();i++)
+        {
+            tf[i]=INT_MIN;
+            tg[i]=INT_MIN;
+        }
+        tf[0]=nums[0];
+        tg[0]=nums[0];
+     int ans= f(nums,0,s,tf,tg);
+     return ans;
+    }
+};
+//solution 6 Bottom Up solution
+//T.C- O(n) and S.C- O(n)
+class Solution6 {
+public:
+    int maxSubArray(vector<int>& nums) {
+       int s=nums.size();
+       int tf[s];
+       int tg[s];
+       tf[0]=nums[0];
+       tg[0]=nums[0];
+       for(int i=1;i<s;i++)
+       {
+           
+           tg[i]=max(nums[i],nums[i]+tg[i-1]);
+           tf[i]=max(tf[i-1],tg[i]);
+       }
+       
+       return tf[s-1];
+    }
+};
+//solution 7 Using window size of 2
+//T.C- O(n) and S.C- O(1)
+class Solution7 {
+public:
+    int maxSubArray(vector<int>& nums) {
+       int f=nums[0];
+       int g=nums[0];
+       for(int i=1;i<nums.size();i++)
+       {
+           g=max(nums[i]+g,nums[i]);
+           f=max(f,g);
+       }
+       return f;
+    }
+};
+
